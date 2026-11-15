@@ -1,119 +1,169 @@
-/* ============================================================
-   TOLITECNO · Service Worker (PWA + Web Push)
+/* ============================================================================
+   TOLITECNO · Service Worker (PWA + Notificaciones Push en 2do plano/cerrada)
    Repo: https://tolitecnoapp-glitch.github.io/TOLITECNO/
-   Debe vivir en la RAÍZ del repo, junto a index.html / app.html / viaje.html
-   ============================================================ */
-const CACHE = "tolitecno-cache-v2";
-const BASE = new URL("./", self.registration.scope).pathname; // /TOLITECNO/
-const CORE = [
-  BASE,
-  BASE + "index.html",
-  BASE + "app.html",
-  BASE + "viaje.html",
-  BASE + "manifest.json",
-  BASE + "icon-192.png",
-  BASE + "icon-512.png",
+   ============================================================================ */
+'use strict';
+
+const CACHE_NAME = 'tolitecno-pwa-v2';
+const BASE_FALLBACK = 'https://tolitecnoapp-glitch.github.io/TOLITECNO/';
+const ASSETS_BASE = [
+  './',
+  './index.html',
+  './app.html',
+  './viaje.html',
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png'
 ];
 
-self.addEventListener("install", (event) => {
+function urlAbsoluta(ruta) {
+  const base = (self.registration && self.registration.scope) || BASE_FALLBACK;
+  try {
+    return new URL(ruta || './app.html', base).href;
+  } catch (e) {
+    return BASE_FALLBACK + 'app.html';
+  }
+}
+
+/* ================= INSTALACIÓN Y ACTIVACIÓN ================= */
+self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE)
-      .then((cache) => cache.addAll(CORE))
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(ASSETS_BASE).catch(() => {}))
       .then(() => self.skipWaiting())
-      .catch(() => self.skipWaiting())
   );
 });
 
-self.addEventListener("activate", (event) => {
+self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
 
-/* Red primero (la app es en tiempo real); caché solo como respaldo offline.
-   Nunca se cachean llamadas a Supabase ni a Google Maps. */
-self.addEventListener("fetch", (event) => {
-  const { request } = event;
-  if (request.method !== "GET") return;
-  const url = new URL(request.url);
+/* ================= FETCH (Network-first para HTML · nunca cachea Supabase/APIs) ================= */
+self.addEventListener('fetch', (event) => {
+  const req = event.request;
+  if (req.method !== 'GET') return;
+
+  const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
-  if (/supabase\.co|googleapis\.com|gstatic\.com/i.test(url.href)) return;
+
+  const esNavegacion = req.mode === 'navigate' || (req.headers.get('accept') || '').includes('text/html');
+  if (esNavegacion) {
+    event.respondWith(
+      fetch(req)
+        .then((res) => {
+          if (res && res.ok) {
+            const copia = res.clone();
+            caches.open(CACHE_NAME).then((c) => c.put(req, copia)).catch(() => {});
+          }
+          return res;
+        })
+        .catch(() => caches.match(req).then((r) => r || caches.match('./index.html')))
+    );
+    return;
+  }
 
   event.respondWith(
-    fetch(request)
-      .then((response) => {
-        const copia = response.clone();
-        caches.open(CACHE).then((cache) => cache.put(request, copia)).catch(() => {});
-        return response;
-      })
-      .catch(() => caches.match(request, { ignoreSearch: true })
-        .then((r) => r || caches.match(BASE + "index.html")))
+    caches.match(req).then((cached) => {
+      const enRed = fetch(req)
+        .then((res) => {
+          if (res && res.ok) {
+            const copia = res.clone();
+            caches.open(CACHE_NAME).then((c) => c.put(req, copia)).catch(() => {});
+          }
+          return res;
+        })
+        .catch(() => cached);
+      return cached || enRed;
+    })
   );
 });
 
-/* ================= PUSH (app cerrada / segundo plano) =================
-   La Edge Function `enviar-push` envía un JSON así:
-   { "tipo":"push-viaje"|"push-estado", "viaje_id":123, "estado":"aceptado",
-     "title":"...", "body":"...", "url":".../viaje.html?id=123&rol=pasajero", "tag":"..." } */
-self.addEventListener("push", (event) => {
-  let data = {};
-  try { data = event.data ? event.data.json() : {}; }
-  catch (e) { data = { body: event.data ? event.data.text() : "" }; }
+/* ================= RECEPCIÓN DE NOTIFICACIONES PUSH ================= */
+self.addEventListener('push', (event) => {
+  let payload = {};
+  if (event.data) {
+    try {
+      payload = event.data.json();
+    } catch (e) {
+      payload = { title: 'TOLITECNO', body: event.data.text() };
+    }
+  }
 
-  const tipo = data.tipo || data.type || "push-estado";
-  const viajeId = data.viaje_id || data.viajeId || null;
-  const estado = data.estado || null;
-  const esViajeNuevo = tipo === "push-viaje";
+  const data = Object.assign({}, payload.data || {});
+  const tipo = data.tipo || payload.tipo || 'aviso';
+  const viajeId = data.viaje_id != null ? data.viaje_id : (payload.viaje_id != null ? payload.viaje_id : null);
+  const estado = data.estado || payload.estado || '';
+  const icono = payload.icon || urlAbsoluta('icon-192.png');
+  const badge = payload.badge || urlAbsoluta('icon-192.png');
+  const titulo = payload.title || 'TOLITECNO';
+  const cuerpo = payload.body || 'Tienes una actualización de tu viaje.';
+  const tag = payload.tag || (viajeId != null ? ('tolitecno-' + tipo + '-' + viajeId) : 'tolitecno-aviso');
+  const destinoUrl = data.url || payload.url || urlAbsoluta('app.html');
 
-  const title = data.title || (esViajeNuevo ? "🚖 Nueva solicitud · TOLITECNO" : "TOLITECNO · Tu viaje se actualizó");
-  const urlViaje = viajeId
-    ? new URL("viaje.html?id=" + encodeURIComponent(viajeId) + "&rol=" + encodeURIComponent(data.rol || "pasajero"), self.registration.scope).href
-    : null;
-
-  const options = {
-    body: data.body || data.mensaje || "",
-    icon: new URL("icon-192.png", self.registration.scope).href,
-    badge: new URL("icon-192.png", self.registration.scope).href,
-    tag: data.tag || ("tolitecno-" + tipo + "-" + (viajeId || "general") + (estado ? "-" + estado : "")),
-    renotify: true,
-    requireInteraction: esViajeNuevo,
-    vibrate: esViajeNuevo ? [350, 120, 350, 120, 700] : [250, 100, 250],
+  const opciones = {
+    body: cuerpo,
+    icon: icono,
+    badge: badge,
+    tag: tag,
+    renotify: payload.renotify !== false,
+    silent: false,
+    requireInteraction: !!payload.requireInteraction || tipo === 'nuevo_viaje',
+    vibrate: Array.isArray(payload.vibrate) ? payload.vibrate : [350, 120, 350, 120, 600],
     timestamp: Date.now(),
     data: {
-      url: data.url || urlViaje || self.registration.scope,
+      tipo: tipo,
       viaje_id: viajeId,
       estado: estado,
-      tipo: tipo,
-    },
+      url: destinoUrl
+    }
   };
 
   event.waitUntil((async () => {
-    // Avisar a las ventanas abiertas para que se actualicen
-    const clientes = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
-    for (const cliente of clientes) {
-      try { cliente.postMessage({ tipo: tipo, viaje_id: viajeId, estado: estado }); } catch (e) {}
+    // 1) Avisar a cualquier pestaña abierta de TOLITECNO (para sonido + refresco inmediato)
+    const ventanas = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    let hayVentanaEnFoco = false;
+    for (const cliente of ventanas) {
+      if (cliente.focused && cliente.visibilityState === 'visible') hayVentanaEnFoco = true;
+      try {
+        if (tipo === 'nuevo_viaje') {
+          cliente.postMessage({ tipo: 'push-viaje', viaje_id: viajeId, estado: estado });
+        } else if (tipo === 'estado_viaje') {
+          cliente.postMessage({ tipo: 'push-estado', viaje_id: viajeId, estado: estado });
+        } else {
+          cliente.postMessage({ tipo: 'abrir-viaje', viaje_id: viajeId, estado: estado });
+        }
+      } catch (e) {}
     }
-    // CORRECCIÓN PUSH: mostrar SIEMPRE en el cajón de notificaciones del móvil.
-    // Antes se omitía si había una ventana "visible" y en Android una ventana en
-    // segundo plano puede seguir reportándose visible, por lo que los avisos de
-    // aceptado / en curso / finalizado nunca llegaban al cajón.
-    await self.registration.showNotification(title, options);
+
+    // 2) Mostrar SIEMPRE en el cajón de notificaciones del móvil (requisito userVisibleOnly: true)
+    await self.registration.showNotification(titulo, opciones);
   })());
 });
 
-self.addEventListener("notificationclick", (event) => {
+/* ================= CLIC EN LA NOTIFICACIÓN ================= */
+self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-  const d = event.notification.data || {};
-  const destino = d.url || self.registration.scope;
+  const data = (event.notification && event.notification.data) || {};
+  const destino = data.url ? urlAbsoluta(data.url) : urlAbsoluta('app.html');
 
   event.waitUntil((async () => {
-    const clientes = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
-    for (const cliente of clientes) {
-      try { cliente.postMessage({ tipo: "abrir-viaje", viaje_id: d.viaje_id, estado: d.estado }); } catch (e) {}
-      if ("focus" in cliente) {
-        try { if (cliente.navigate) await cliente.navigate(destino); } catch (e) {}
+    const ventanas = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const cliente of ventanas) {
+      if (cliente.url === destino && 'focus' in cliente) {
+        try { cliente.postMessage({ tipo: 'abrir-viaje', viaje_id: data.viaje_id || null }); } catch (e) {}
+        return cliente.focus();
+      }
+    }
+    for (const cliente of ventanas) {
+      if (cliente.url.startsWith(urlAbsoluta('./')) && 'focus' in cliente) {
+        try {
+          if ('navigate' in cliente) await cliente.navigate(destino);
+          cliente.postMessage({ tipo: 'abrir-viaje', viaje_id: data.viaje_id || null });
+        } catch (e) {}
         return cliente.focus();
       }
     }
@@ -121,12 +171,12 @@ self.addEventListener("notificationclick", (event) => {
   })());
 });
 
-/* Si una suscripción caduca, las páginas abiertas la renuevan (app/viaje ya escuchan 'renovar-push') */
-self.addEventListener("pushsubscriptionchange", (event) => {
+/* ================= RENOVACIÓN AUTOMÁTICA DE SUSCRIPCIÓN PUSH ================= */
+self.addEventListener('pushsubscriptionchange', (event) => {
   event.waitUntil((async () => {
-    const clientes = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
-    for (const cliente of clientes) {
-      try { cliente.postMessage({ tipo: "renovar-push" }); } catch (e) {}
+    const ventanas = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const cliente of ventanas) {
+      try { cliente.postMessage({ tipo: 'renovar-push' }); } catch (e) {}
     }
   })());
 });
