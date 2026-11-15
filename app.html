@@ -797,9 +797,10 @@
     </button>
     <div id="menu-subservicios" class="menu-subservicios oculto" aria-label="Servicios de TOLITECNO">
       <button type="button" class="menu-perfil-item" data-servicio-info="taxi_auto"><span class="mi-ico" data-icono-servicio="taxi_auto"></span><span>TOLITECNO TAXI</span></button>
-      <button type="button" class="menu-perfil-item" data-servicio-info="auto_particular"><span class="mi-ico" data-icono-servicio="auto_particular"></span><span>TOLITECNO AUTO</span></button>
-      <button type="button" class="menu-perfil-item" data-servicio-info="moto_delivery"><span class="mi-ico" data-icono-servicio="moto_delivery"></span><span>TOLITECNO ENVÍOS</span></button>
-      <button type="button" class="menu-perfil-item" data-servicio-info="moto_taxi"><span class="mi-ico" data-icono-servicio="moto_taxi"></span><span>TOLITECNO MOTO</span></button>
+      <!-- Servicios ocultos temporalmente (no eliminar: se reactivarán luego) -->
+      <button type="button" class="menu-perfil-item oculto" data-servicio-info="auto_particular"><span class="mi-ico" data-icono-servicio="auto_particular"></span><span>TOLITECNO AUTO</span></button>
+      <button type="button" class="menu-perfil-item oculto" data-servicio-info="moto_delivery"><span class="mi-ico" data-icono-servicio="moto_delivery"></span><span>TOLITECNO ENVÍOS</span></button>
+      <button type="button" class="menu-perfil-item oculto" data-servicio-info="moto_taxi"><span class="mi-ico" data-icono-servicio="moto_taxi"></span><span>TOLITECNO MOTO</span></button>
     </div>
     <button type="button" class="menu-perfil-item" id="menu-item-ayuda">
       <span class="mi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
@@ -1189,11 +1190,12 @@
     };
 
     const CATALOGO = [
-      { clave:'moto_taxi',     etiqueta:'TOLITECNO MOTO',    desc:'Económico y ágil · 1 pasajero',           base:2450,  porKm:980,  minTarifa:4400,  espera:'2 min' },
-      { clave:'moto_delivery', etiqueta:'TOLITECNO ENVÍOS',  desc:'Envíos de paquetes, comida y documentos',  base:2940,  porKm:1176, minTarifa:5400,  espera:'3 min' },
-      { clave:'taxi_auto',     etiqueta:'TOLITECNO TAXI',    desc:'Auto sedán cómodo · hasta 4 pasajeros',    base:3920,  porKm:1372, minTarifa:6400,  espera:'4 min' },
-      { clave:'auto_particular', etiqueta:'TOLITECNO AUTO', desc:'Auto particular cómodo · hasta 4 pasajeros', base:3920, porKm:1372, minTarifa:6400, espera:'4 min' }
+      { clave:'moto_taxi',     etiqueta:'TOLITECNO MOTO',    desc:'Económico y ágil · 1 pasajero',           base:2450,  porKm:980,  minTarifa:4400,  espera:'2 min', visible:false },
+      { clave:'moto_delivery', etiqueta:'TOLITECNO ENVÍOS',  desc:'Envíos de paquetes, comida y documentos',  base:2940,  porKm:1176, minTarifa:5400,  espera:'3 min', visible:false },
+      { clave:'taxi_auto',     etiqueta:'TOLITECNO TAXI',    desc:'Auto sedán cómodo · hasta 4 pasajeros',    base:3920,  porKm:1372, minTarifa:6400,  espera:'4 min', visible:true },
+      { clave:'auto_particular', etiqueta:'TOLITECNO AUTO', desc:'Auto particular cómodo · hasta 4 pasajeros', base:3920, porKm:1372, minTarifa:6400, espera:'4 min', visible:false }
     ];
+    /* Solo TOLITECNO TAXI visible por ahora. Los demás quedan en el catálogo, ocultos, para reactivarlos luego. */
 
     function normalizarClaveServicio(raw) {
       if (raw === null || raw === undefined || raw === '') return null;
@@ -1688,7 +1690,7 @@
             new google.maps.LatLng(origen), new google.maps.LatLng(destino)) / 1000;
           duracionMin = Math.max(3, Math.round(distanciaKm * 2.5));
         }
-        const desde = Math.min.apply(null, CATALOGO.map(tarifaDe));
+        const desde = Math.min.apply(null, CATALOGO.filter((s) => s.visible !== false).map(tarifaDe));
         statusPasajero.innerHTML = '<b style="color:var(--primary-color)">' + distanciaKm.toFixed(1) +
           ' km</b> · ~' + duracionMin + ' min de recorrido · desde <b>' + formatoMoneda(desde) + '</b>';
         btnPedirViaje.textContent = 'Ver servicios disponibles';
@@ -3539,6 +3541,7 @@
       const conteoActivos = await obtenerConductoresActivos();
       const disponibles = [];
       CATALOGO.forEach((s) => {
+        if (s.visible === false) return; // servicio oculto temporalmente (solo se muestra TOLITECNO TAXI)
         if (conteoActivos[s.clave] > 0) disponibles.push(Object.assign({}, s, { opcion:s.clave }));
         // TOLITECNO TAXI · Con mascota (aparece justo debajo de TOLITECNO TAXI cuando hay conductores que aceptan mascotas)
         if (s.clave === 'taxi_auto' && conteoActivos[OPCION_MASCOTA] > 0) {
