@@ -3,7 +3,7 @@
    Repo: https://tolitecnoapp-glitch.github.io/TOLITECNO/
    Debe vivir en la RAÍZ del repo, junto a index.html / app.html / viaje.html
    ============================================================ */
-const CACHE = "tolitecno-cache-v1";
+const CACHE = "tolitecno-cache-v2";
 const BASE = new URL("./", self.registration.scope).pathname; // /TOLITECNO/
 const CORE = [
   BASE,
@@ -90,18 +90,16 @@ self.addEventListener("push", (event) => {
   };
 
   event.waitUntil((async () => {
-    // Avisar a las ventanas abiertas para que se actualicen sin duplicar la notificación si ya están en primer plano
+    // Avisar a las ventanas abiertas para que se actualicen
     const clientes = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
-    let hayVisible = false;
     for (const cliente of clientes) {
-      if (cliente.visibilityState === "visible") hayVisible = true;
       try { cliente.postMessage({ tipo: tipo, viaje_id: viajeId, estado: estado }); } catch (e) {}
     }
-    if (!hayVisible) {
-      await self.registration.showNotification(title, options);
-    } else if (esViajeNuevo) {
-      // Con la app abierta el sonido/toast lo maneja la página; no duplicamos notificación del sistema
-    }
+    // CORRECCIÓN PUSH: mostrar SIEMPRE en el cajón de notificaciones del móvil.
+    // Antes se omitía si había una ventana "visible" y en Android una ventana en
+    // segundo plano puede seguir reportándose visible, por lo que los avisos de
+    // aceptado / en curso / finalizado nunca llegaban al cajón.
+    await self.registration.showNotification(title, options);
   })());
 });
 
