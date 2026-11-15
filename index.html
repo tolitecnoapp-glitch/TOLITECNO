@@ -745,9 +745,10 @@
         <select id="doc-tipo-servicio" required>
           <option value="" disabled selected>Tipo de servicio</option>
           <option value="TOLITECNO TAXI">TOLITECNO TAXI</option>
-          <option value="TOLITECNO AUTO">TOLITECNO AUTO</option>
-          <option value="TOLITECNO ENVIOS">TOLITECNO ENVIOS</option>
-          <option value="TOLITECNO MOTO">TOLITECNO MOTO</option>
+          <!-- Servicios ocultos temporalmente (no eliminar: se reactivarán luego) -->
+          <option value="TOLITECNO AUTO" hidden style="display:none">TOLITECNO AUTO</option>
+          <option value="TOLITECNO ENVIOS" hidden style="display:none">TOLITECNO ENVIOS</option>
+          <option value="TOLITECNO MOTO" hidden style="display:none">TOLITECNO MOTO</option>
         </select>
       </div>
       <div class="input-group"><input type="text" id="doc-marca" placeholder="Marca del Vehículo (Ej: Chevrolet)" required autocomplete="off"></div>
