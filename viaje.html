@@ -15,28 +15,26 @@
   <style>
     :root{
       --bg-color:#f8f9fa; --card-bg:#ffffff; --text-color:#1f2937; --muted-text:#6b7280;
-      --primary-color:#B8860B; --primary-hover:#EAB308; --brand:#F9C730; --border-color:#e5e7eb;
+      --primary-color:#F9C730; --primary-hover:#E0AD15; --brand:#C49300; --accent-text:#B8860B; --border-color:#e5e7eb;
       --accent-green:#10b981; --accent-amber:#f59e0b; --accent-blue:#B8860B; --accent-red:#ef4444;
       --field-bg:rgba(249,199,48,.08);
       --shadow:0 10px 30px -5px rgba(0,0,0,.08); --radius:18px;
     }
     body.dark-theme{
       --bg-color:#121212; --card-bg:#1e1e1e; --text-color:#f0f6fc; --muted-text:#8b949e;
+      --brand:#F9C730; --accent-text:#F9C730; --accent-blue:#F9C730;
       --border-color:#30363d; --field-bg:rgba(249,199,48,.12);
-      --primary-color:#F9C730; --accent-blue:#F9C730;
       --shadow:0 10px 30px -5px rgba(0,0,0,.5);
     }
     *{box-sizing:border-box;margin:0;padding:0;font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
     body{background:var(--bg-color);color:var(--text-color);min-height:100vh;display:flex;flex-direction:column;transition:background .3s,color .3s;-webkit-font-smoothing:antialiased}
 
     header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:var(--card-bg);border-bottom:1px solid var(--border-color);position:sticky;top:0;z-index:10}
-    .brand{font-size:1.2rem;font-weight:800;color:var(--primary-color);display:flex;align-items:center;gap:8px;text-decoration:none}
+    .brand{font-size:1.2rem;font-weight:800;color:var(--accent-text);display:flex;align-items:center;gap:8px;text-decoration:none}
     .brand small{display:block;font-size:.55rem;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:var(--brand)}
-    body:not(.dark-theme) .brand small{color:#8A6D00}
     .header-acciones{display:flex;align-items:center;gap:8px}
     .btn-icon{background:transparent;border:1px solid var(--border-color);color:var(--text-color);width:40px;height:40px;border-radius:50%;display:grid;place-items:center;cursor:pointer;transition:all .2s}
-    .btn-icon:hover{border-color:var(--brand);color:#8A6D00;transform:translateY(-1px)}
-    body.dark-theme .btn-icon:hover{color:var(--brand)}
+    .btn-icon:hover{border-color:var(--primary-color);color:var(--accent-text);transform:translateY(-1px)}
     .btn-icon svg{width:18px;height:18px}
 
     main{flex:1;max-width:600px;width:100%;margin:0 auto;padding:20px;display:flex;flex-direction:column;gap:16px}
@@ -49,7 +47,7 @@
     .status-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:20px;font-weight:800;font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px}
     .status-badge.solicitado{background:rgba(245,158,11,.15);color:var(--accent-amber)}
     .status-badge.aceptado{background:rgba(249,199,48,.18);color:var(--accent-blue)}
-    .status-badge.en_camino,.status-badge.en_progreso{background:rgba(249,199,48,.18);color:var(--primary-color)}
+    .status-badge.en_camino,.status-badge.en_progreso{background:rgba(249,199,48,.18);color:var(--accent-text)}
     .status-badge.terminado{background:rgba(16,185,129,.15);color:var(--accent-green)}
     .status-badge.cancelado{background:rgba(239,68,68,.15);color:var(--accent-red)}
     /* [AJUSTE 3] En modo oscuro el badge "en progreso" va en blanco */
@@ -65,14 +63,14 @@
     .stepper::before{content:'';position:absolute;top:14px;left:12%;right:12%;height:2px;background:var(--border-color);z-index:1}
     .step{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px;width:25%}
     .step-icon{position:relative;width:30px;height:30px;border-radius:50%;background:var(--card-bg);border:2px solid var(--border-color);display:grid;place-items:center;font-size:.72rem;font-weight:800;color:var(--muted-text)}
-    .step.active .step-icon{border-color:var(--brand);background:var(--brand);color:#121212}
+    .step.active .step-icon{border-color:var(--primary-color);background:var(--primary-color);color:#121212}
     .step.completed .step-icon{border-color:var(--accent-green);background:var(--accent-green);color:#fff}
     .step-text{font-size:.66rem;color:var(--muted-text);font-weight:700;text-align:center;line-height:1.2}
     .step.active .step-text,.step.completed .step-text{color:var(--text-color)}
 
     /* Ring ring en los estados */
     .step.active .step-icon{animation:ringShake 1.6s ease-in-out infinite}
-    .step.active .step-icon::before,.step.active .step-icon::after{content:'';position:absolute;inset:-2px;border-radius:50%;border:2px solid var(--brand);animation:ringWave 1.6s ease-out infinite;pointer-events:none}
+    .step.active .step-icon::before,.step.active .step-icon::after{content:'';position:absolute;inset:-2px;border-radius:50%;border:2px solid var(--primary-color);animation:ringWave 1.6s ease-out infinite;pointer-events:none}
     .step.active .step-icon::after{animation-delay:.8s}
     .step.completed .step-icon::after{content:'';position:absolute;inset:-2px;border-radius:50%;border:2px solid var(--accent-green);animation:ringWave 2.4s ease-out infinite;pointer-events:none}
     @keyframes ringWave{0%{transform:scale(1);opacity:.8}100%{transform:scale(2.1);opacity:0}}
@@ -91,13 +89,13 @@
     .fx-aurora{position:absolute;inset:-32%;filter:blur(40px);opacity:.9}
     .fx-blob{position:absolute;display:block;border-radius:50%;will-change:transform}
     .fx-blob.b1{width:58%;height:72%;left:-10%;top:-12%;
-      background:radial-gradient(circle at 50% 50%,rgba(249,199,48,.40),rgba(249,199,48,0) 70%);
+      background:radial-gradient(circle at 50% 50%,rgba(249,199,48,.38),rgba(249,199,48,0) 70%);
       animation:fxBlob1 18s ease-in-out infinite alternate}
     .fx-blob.b2{width:64%;height:80%;right:-14%;top:2%;
-      background:radial-gradient(circle at 50% 50%,rgba(249,199,48,.34),rgba(249,199,48,0) 70%);
+      background:radial-gradient(circle at 50% 50%,rgba(249,199,48,.32),rgba(249,199,48,0) 70%);
       animation:fxBlob2 23s ease-in-out infinite alternate}
     .fx-blob.b3{width:50%;height:62%;left:24%;bottom:-26%;
-      background:radial-gradient(circle at 50% 50%,rgba(249,199,48,.26),rgba(249,199,48,0) 70%);
+      background:radial-gradient(circle at 50% 50%,rgba(249,199,48,.24),rgba(249,199,48,0) 70%);
       animation:fxBlob3 27s ease-in-out infinite alternate}
     @keyframes fxBlob1{0%{transform:translate3d(0,0,0) scale(1)}100%{transform:translate3d(13%,7%,0) scale(1.18)}}
     @keyframes fxBlob2{0%{transform:translate3d(0,4%,0) scale(1.08)}100%{transform:translate3d(-12%,-7%,0) scale(.92)}}
@@ -105,7 +103,7 @@
 
     /* Capa 2 · Malla de puntos con deriva (parallax) */
     .fx-grid{position:absolute;inset:-40px;opacity:.6;
-      background-image:radial-gradient(rgba(249,199,48,.22) 1px,transparent 1.5px);
+      background-image:radial-gradient(rgba(249,199,48,.24) 1px,transparent 1.5px);
       background-size:22px 22px;
       -webkit-mask-image:radial-gradient(125% 95% at 50% 32%,#000 12%,transparent 78%);
       mask-image:radial-gradient(125% 95% at 50% 32%,#000 12%,transparent 78%);
@@ -114,18 +112,18 @@
 
     /* Capa 3 · Ruta viva + vehículo de luz */
     .fx-route{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-    .fx-route-base{fill:none;stroke:rgba(249,199,48,.20);stroke-width:2.4;stroke-linecap:round;vector-effect:non-scaling-stroke}
-    .fx-route-dash{fill:none;stroke:url(#bkRouteGrad);stroke-width:2.6;stroke-linecap:round;stroke-dasharray:14 18;
+    .fx-route-base{fill:none;stroke:rgba(249,199,48,.22);stroke-width:2.4;stroke-linecap:round;vector-effect:non-scaling-stroke}
+    .fx-route-dash{fill:none;stroke:url(#tlRouteGrad);stroke-width:2.6;stroke-linecap:round;stroke-dasharray:14 18;
       vector-effect:non-scaling-stroke;animation:fxDash 2.4s linear infinite}
     @keyframes fxDash{to{stroke-dashoffset:-32}}
-    .fx-node{fill:none;stroke:rgba(249,199,48,.55);stroke-width:1.6;vector-effect:non-scaling-stroke;
+    .fx-node{fill:none;stroke:rgba(249,199,48,.58);stroke-width:1.6;vector-effect:non-scaling-stroke;
       transform-box:fill-box;transform-origin:center;animation:fxNode 3.4s ease-out infinite}
     .fx-node.n2{animation-delay:1.15s}
     @keyframes fxNode{0%{transform:scale(.35);opacity:.9}65%{opacity:.2}100%{transform:scale(2.6);opacity:0}}
-    .fx-node-dot{fill:rgba(249,199,48,.75)}
-    .fx-comet{fill:#fff7d6}
-    .fx-comet-tail{fill:rgba(249,199,48,.45)}
-    .fx-comet-tail2{fill:rgba(249,199,48,.20)}
+    .fx-node-dot{fill:rgba(249,199,48,.78)}
+    .fx-comet{fill:#fff8dc}
+    .fx-comet-tail{fill:rgba(249,199,48,.48)}
+    .fx-comet-tail2{fill:rgba(249,199,48,.22)}
 
     /* Capa 4 · Destello especular */
     .fx-sweep{position:absolute;top:-70%;left:-45%;width:38%;height:240%;
@@ -141,7 +139,7 @@
     /* Capa 5 · Micropartículas ascendentes */
     .fx-dust{position:absolute;inset:0}
     .fx-dust i{position:absolute;bottom:-10px;width:3px;height:3px;border-radius:50%;opacity:0;
-      background:rgba(249,199,48,.65);box-shadow:0 0 7px rgba(249,199,48,.55);
+      background:rgba(249,199,48,.68);box-shadow:0 0 7px rgba(249,199,48,.58);
       animation:fxDust 13s linear infinite;will-change:transform,opacity}
     .fx-dust i:nth-child(1){left:11%;animation-delay:0s;animation-duration:12s}
     .fx-dust i:nth-child(2){left:27%;animation-delay:2.6s;animation-duration:15s}
@@ -156,9 +154,9 @@
       100%{transform:translate3d(10px,-250px,0) scale(1.15);opacity:0}}
 
     /* Ajustes en modo oscuro */
-    body.dark-theme .fx-blob.b1{background:radial-gradient(circle at 50% 50%,rgba(249,199,48,.34),rgba(249,199,48,0) 70%)}
-    body.dark-theme .fx-blob.b2{background:radial-gradient(circle at 50% 50%,rgba(249,199,48,.34),rgba(249,199,48,0) 70%)}
-    body.dark-theme .fx-blob.b3{background:radial-gradient(circle at 50% 50%,rgba(249,199,48,.26),rgba(249,199,48,0) 70%)}
+    body.dark-theme .fx-blob.b1{background:radial-gradient(circle at 50% 50%,rgba(249,199,48,.32),rgba(249,199,48,0) 70%)}
+    body.dark-theme .fx-blob.b2{background:radial-gradient(circle at 50% 50%,rgba(249,199,48,.32),rgba(249,199,48,0) 70%)}
+    body.dark-theme .fx-blob.b3{background:radial-gradient(circle at 50% 50%,rgba(249,199,48,.24),rgba(249,199,48,0) 70%)}
     body.dark-theme .fx-grid{background-image:radial-gradient(rgba(249,199,48,.26) 1px,transparent 1.5px);opacity:.55}
     body.dark-theme .fx-route-base{stroke:rgba(249,199,48,.22)}
     body.dark-theme .fx-node{stroke:rgba(249,199,48,.6)}
@@ -174,32 +172,32 @@
     }
 
     /* MÉTODO DE PAGO DEL VIAJE (efectivo o billetera digital del conductor) */
-    .pago-metodo{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:10px;background:var(--field-bg);color:var(--primary-color);font-weight:800;font-size:.84rem;margin-bottom:10px}
+    .pago-metodo{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:10px;background:var(--field-bg);color:var(--accent-text);font-weight:800;font-size:.84rem;margin-bottom:10px}
     .pago-metodo svg{width:16px;height:16px}
     .pago-nota{font-size:.8rem;color:var(--muted-text);line-height:1.45;font-weight:600}
     .pago-nota b{color:var(--text-color)}
     .pago-billetera{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border-radius:14px;background:var(--field-bg);border:1px solid var(--border-color);margin-bottom:10px}
     .pago-billetera-datos{display:flex;flex-direction:column;gap:3px;min-width:0}
     .pago-billetera-nombre{font-size:.95rem;font-weight:800}
-    .pago-billetera-numero{font-size:1.05rem;font-weight:800;letter-spacing:.06em;color:var(--primary-color);word-break:break-all;background:none;border:0;padding:0;margin:0;cursor:pointer;text-align:left;font-family:inherit}
+    .pago-billetera-numero{font-size:1.05rem;font-weight:800;letter-spacing:.06em;color:var(--accent-text);word-break:break-all;background:none;border:0;padding:0;margin:0;cursor:pointer;text-align:left;font-family:inherit}
     .pago-billetera-numero small{margin-left:6px;padding:2px 7px;border-radius:999px;border:1px solid var(--border-color);font-size:.58rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted-text);vertical-align:middle}
     .pago-billetera-numero:active{opacity:.7}
     .pago-acepta{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:10px}
     .pago-acepta-label{font-size:.74rem;font-weight:700;color:var(--muted-text)}
     .pago-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:999px;background:var(--field-bg);border:1px solid var(--border-color);font-size:.72rem;font-weight:800;color:var(--text-color)}
-    .pago-chip svg{width:13px;height:13px;color:var(--primary-color)}
+    .pago-chip svg{width:13px;height:13px;color:var(--accent-text)}
     #pago-cuerpo .pago-billetera{margin-bottom:8px}
     .pago-copiar{align-self:flex-start;margin-top:4px;padding:6px 10px;border-radius:9px;border:1px solid var(--border-color);background:var(--card-bg);color:var(--text-color);font-size:.72rem;font-weight:700;cursor:pointer}
-    .pago-copiar:hover{border-color:var(--brand)}
+    .pago-copiar:hover{border-color:var(--primary-color)}
     .pago-qr-mini{flex-shrink:0;width:78px;height:78px;padding:4px;border-radius:12px;border:1px solid var(--border-color);background:#fff;cursor:pointer}
     .pago-qr-mini img{width:100%;height:100%;object-fit:contain;display:block}
     .qr-pago-marco{margin:12px auto;padding:12px;border-radius:16px;background:#fff;max-width:300px}
     .qr-pago-marco img{width:100%;height:auto;display:block}
-    .qr-pago-titulo{font-size:.9rem;font-weight:800;margin-bottom:12px;color:var(--primary-color);word-break:break-word}
+    .qr-pago-titulo{font-size:.9rem;font-weight:800;margin-bottom:12px;color:var(--accent-text);word-break:break-word}
 
     /* PERFIL DE LA CONTRAPARTE */
     .profile-box{display:flex;align-items:center;gap:14px}
-    .profile-img{width:62px;height:62px;border-radius:50%;object-fit:cover;border:2px solid var(--brand);background:var(--field-bg);flex-shrink:0}
+    .profile-img{width:62px;height:62px;border-radius:50%;object-fit:cover;border:2px solid var(--primary-color);background:var(--field-bg);flex-shrink:0}
     .profile-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
     .profile-name{font-size:1.05rem;font-weight:800;word-break:break-word;line-height:1.25}
     .profile-sub{font-size:.8rem;color:var(--muted-text);line-height:1.3}
@@ -207,10 +205,10 @@
     .profile-extra{margin-top:5px;display:flex;flex-direction:column;gap:6px;width:100%}
 
     .conductor-tags-top{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-    .vehicle-tag,.mini-tag{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;background:var(--field-bg);color:var(--primary-color);border-radius:9px;font-weight:700;font-size:.74rem}
+    .vehicle-tag,.mini-tag{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;background:var(--field-bg);color:var(--accent-text);border-radius:9px;font-weight:700;font-size:.74rem}
     .vehicle-tag svg,.mini-tag svg{width:13px;height:13px;flex-shrink:0}
     .mini-tag{color:var(--text-color)}
-    .mini-tag.placa-tag{border:1px dashed var(--brand);color:var(--primary-color)}
+    .mini-tag.placa-tag{border:1px dashed var(--primary-color);color:var(--accent-text)}
     .mini-tag.rating-tag{color:var(--accent-amber)}
     .placa{letter-spacing:1px;text-transform:uppercase;font-weight:800}
 
@@ -222,7 +220,7 @@
       background:var(--field-bg);border:1px solid var(--border-color);border-radius:9px;
       font-weight:700;font-size:.74rem;color:var(--text-color);cursor:pointer;transition:all .2s;
     }
-    .vehiculo-thumb-chip:hover{border-color:var(--brand);transform:translateY(-1px)}
+    .vehiculo-thumb-chip:hover{border-color:var(--primary-color);transform:translateY(-1px)}
     .vehiculo-mini-img{width:28px;height:28px;border-radius:6px;object-fit:cover;border:1px solid var(--border-color);background:var(--card-bg)}
     .vehiculo-thumb-txt{font-size:.72rem;font-weight:700}
     .calificacion-debajo-placa{display:flex;align-items:center;gap:6px;margin-top:1px}
@@ -251,9 +249,9 @@
     .btn-contacto{
       flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 14px;
       border-radius:12px;cursor:pointer;font-size:.84rem;font-weight:800;text-decoration:none;
-      transition:all .2s;background:var(--field-bg);color:var(--primary-color);border:1px solid var(--border-color);position:relative;
+      transition:all .2s;background:var(--field-bg);color:var(--accent-text);border:1px solid var(--border-color);position:relative;
     }
-    .btn-contacto:hover{transform:translateY(-1px);border-color:var(--brand)}
+    .btn-contacto:hover{transform:translateY(-1px);border-color:var(--primary-color)}
     .btn-contacto svg{width:16px;height:16px}
     .badge-chat{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--accent-red);color:#fff;font-size:.65rem;display:none;place-items:center}
 
@@ -299,38 +297,37 @@
     /* RUTA */
     .route-box{display:flex;flex-direction:column;gap:12px}
     .route-point{display:flex;align-items:flex-start;gap:12px}
-    .dot{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:.66rem;font-weight:800;color:#121212;flex-shrink:0;margin-top:1px}
-    .dot.a{background:var(--brand)}
-    .dot.b{background:var(--accent-green);color:#fff}
+    .dot{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:.66rem;font-weight:800;color:#fff;flex-shrink:0;margin-top:1px}
+    .dot.a{background:var(--primary-color);color:#121212}
+    .dot.b{background:var(--accent-green)}
     .route-detail{font-size:.88rem;font-weight:700;word-break:break-word}
     .route-sub{font-size:.74rem;color:var(--muted-text);margin-top:1px}
-    .route-map{margin-left:32px;font-size:.72rem;font-weight:800;color:#8A6D00;text-decoration:none}
-    body.dark-theme .route-map{color:var(--brand)}
+    .route-map{margin-left:32px;font-size:.72rem;font-weight:800;color:var(--brand);text-decoration:none}
     .route-map:hover{text-decoration:underline}
     .ruta-total{margin-top:16px;padding-top:14px;border-top:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;gap:12px}
     .kpi-label{font-size:.74rem;color:var(--muted-text);font-weight:600}
     .kpi-valor{font-weight:800;font-size:.95rem;margin-top:2px}
     .kpi-tarifa{text-align:right}
-    .kpi-tarifa .kpi-valor{font-size:1.2rem;color:var(--primary-color);font-weight:800}
+    .kpi-tarifa .kpi-valor{font-size:1.2rem;color:var(--accent-text);font-weight:800}
     .servicio-linea{display:inline-flex;align-items:center;gap:6px}
-    .servicio-linea svg{width:15px;height:15px;color:#8A6D00}
-    body.dark-theme .servicio-linea svg{color:var(--brand)}
+    .servicio-linea svg{width:15px;height:15px;color:var(--brand)}
 
     /* ACCIONES */
-    .btn-action{width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(90deg,#F9C730,#EAB308);color:#121212;
-      font-size:1rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:filter .2s,transform .1s,opacity .2s;text-decoration:none}
+    .btn-action{width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(90deg,#E5B21A 0%,#F9C730 50%,#FBD352 100%);color:#121212;
+      font-size:1rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:filter .2s,transform .1s,opacity .2s;text-decoration:none;
+      box-shadow:0 8px 22px rgba(249,199,48,.28)}
     .btn-action:hover{filter:brightness(1.05)}
     .btn-action:active{transform:scale(.985)}
     .btn-action:disabled{opacity:.55;cursor:not-allowed;transform:none}
     .btn-action svg{width:18px;height:18px}
-    .btn-danger{background:linear-gradient(90deg,#a32626,#e05a5a);color:#fff}
-    .btn-secundario{background:var(--field-bg);color:var(--primary-color);border:1px solid var(--border-color)}
+    .btn-danger{background:linear-gradient(90deg,#a32626,#e05a5a);color:#fff;box-shadow:0 8px 22px rgba(224,90,90,.28)}
+    .btn-secundario{background:var(--field-bg);color:var(--accent-text);border:1px solid var(--border-color);box-shadow:none}
     .zona-acciones{display:flex;flex-direction:column;gap:8px}
     .zona-acciones > * + *{margin-top:8px}
 
     .aviso{padding:12px 14px;border-radius:12px;font-size:.78rem;font-weight:600;line-height:1.45;color:var(--muted-text);
       background:var(--field-bg);border:1px dashed var(--border-color)}
-    .aviso b{color:var(--primary-color)}
+    .aviso b{color:var(--accent-text)}
 
     .skeleton{display:inline-block;border-radius:6px;background:var(--field-bg);animation:shimmer 1.4s infinite linear;background-size:200% 100%}
     @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
@@ -353,30 +350,30 @@
     .modal-title{font-size:1.1rem;font-weight:800}
     .modal-desc{font-size:.84rem;color:var(--muted-text);line-height:1.45;margin-bottom:14px}
     .modal-close{background:transparent;border:1px solid var(--border-color);color:var(--text-color);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:1rem;flex-shrink:0}
-    .modal-ico{width:64px;height:64px;border-radius:50%;margin:0 auto 12px;display:grid;place-items:center;background:var(--field-bg);color:var(--primary-color);position:relative}
+    .modal-ico{width:64px;height:64px;border-radius:50%;margin:0 auto 12px;display:grid;place-items:center;background:var(--field-bg);color:var(--accent-text);position:relative}
     .modal-ico svg{width:30px;height:30px}
-    .modal-ico::after{content:'';position:absolute;inset:0;border-radius:50%;border:2px solid var(--brand);animation:ringWave 1.8s ease-out infinite}
+    .modal-ico::after{content:'';position:absolute;inset:0;border-radius:50%;border:2px solid var(--primary-color);animation:ringWave 1.8s ease-out infinite}
     .opciones{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
     .opcion{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;border:1px solid var(--border-color);background:var(--field-bg);cursor:pointer;font-size:.86rem;font-weight:600}
-    .opcion input{accent-color:#EAB308;width:16px;height:16px}
-    .opcion.sel{border-color:var(--brand)}
+    .opcion input{accent-color:var(--primary-color);width:16px;height:16px}
+    .opcion.sel{border-color:var(--primary-color)}
     .campo{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border-color);background:var(--field-bg);color:var(--text-color);font-size:.88rem;resize:vertical;outline:none}
-    .campo:focus{border-color:var(--brand)}
+    .campo:focus{border-color:var(--primary-color)}
     .modal-acciones{display:flex;flex-direction:column;gap:8px;margin-top:14px}
     .pin-digitos{display:flex;justify-content:center;gap:10px;margin:14px 0}
-    .pin-digitos span{width:58px;height:70px;border-radius:14px;display:grid;place-items:center;font-size:2rem;font-weight:800;background:var(--field-bg);border:2px solid var(--brand);color:var(--primary-color);animation:popIn .4s ease backwards}
+    .pin-digitos span{width:58px;height:70px;border-radius:14px;display:grid;place-items:center;font-size:2rem;font-weight:800;background:var(--field-bg);border:2px solid var(--primary-color);color:var(--accent-text);animation:popIn .4s ease backwards}
     .pin-digitos span:nth-child(2){animation-delay:.08s}.pin-digitos span:nth-child(3){animation-delay:.16s}.pin-digitos span:nth-child(4){animation-delay:.24s}
     @keyframes popIn{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
     .pin-inputs{display:flex;justify-content:center;gap:10px;margin:14px 0}
     .pin-inputs input{width:58px;height:66px;text-align:center;font-size:1.8rem;font-weight:800;border-radius:14px;border:2px solid var(--border-color);background:var(--field-bg);color:var(--text-color);outline:none}
-    .pin-inputs input:focus{border-color:var(--brand)}
+    .pin-inputs input:focus{border-color:var(--primary-color)}
     .pin-inputs.error input{border-color:var(--accent-red);animation:shake .4s}
     @keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 
     /* TARJETA PIN COMPACTA */
     #card-pin{padding:14px 16px}
     #card-pin .card-title{margin-bottom:10px;display:flex;align-items:center;gap:7px}
-    #card-pin .card-title svg{width:14px;height:14px;color:var(--primary-color)}
+    #card-pin .card-title svg{width:14px;height:14px;color:var(--accent-text)}
     .pin-mini{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
     .pin-mini-txt{flex:1;min-width:150px}
     .pin-mini-label{font-size:.82rem;font-weight:800;line-height:1.3}
@@ -397,7 +394,7 @@
     .estrellas button.on svg{fill:var(--accent-amber)}
     .estrellas button:hover{transform:scale(1.15)}
     .nav-app{display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;border:1px solid var(--border-color);background:var(--field-bg);color:var(--text-color);text-decoration:none;font-weight:700}
-    .nav-app:hover{border-color:var(--brand)}
+    .nav-app:hover{border-color:var(--primary-color)}
     .nav-app .logo{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;color:#fff;font-weight:800;flex-shrink:0}
 
     /* [MODIFICACIÓN 2] MODAL DE FOTO DEL VEHÍCULO: TEXTOS EN BLANCO EN MODO OSCURO */
@@ -424,11 +421,11 @@
     /* Chat */
     .chat-box{height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:10px;border-radius:14px;background:var(--field-bg);border:1px solid var(--border-color)}
     .msg{max-width:80%;padding:9px 12px;border-radius:14px;font-size:.86rem;line-height:1.35;word-break:break-word}
-    .msg.mio{align-self:flex-end;background:linear-gradient(90deg,#F9C730,#EAB308);color:#121212;border-bottom-right-radius:4px}
+    .msg.mio{align-self:flex-end;background:linear-gradient(90deg,#E5B21A,#F9C730);color:#121212;font-weight:600;border-bottom-right-radius:4px}
     .msg.otro{align-self:flex-start;background:var(--card-bg);border:1px solid var(--border-color);border-bottom-left-radius:4px}
     .msg small{display:block;font-size:.62rem;opacity:.7;margin-top:3px}
     .chat-form{display:flex;gap:8px;margin-top:10px}
-    .chat-form button{width:48px;border:none;border-radius:12px;background:var(--brand);color:#121212;cursor:pointer;display:grid;place-items:center}
+    .chat-form button{width:48px;border:none;border-radius:12px;background:var(--primary-color);color:#121212;cursor:pointer;display:grid;place-items:center}
     .chat-form button svg{width:18px;height:18px}
     .llamada-estado{text-align:center;font-weight:800;font-size:1rem;margin-bottom:4px}
     .llamada-tiempo{text-align:center;color:var(--muted-text);font-size:.85rem;margin-bottom:10px}
@@ -466,15 +463,15 @@
         <div class="fx-grid"></div>
         <svg class="fx-route" viewBox="0 0 600 220" preserveAspectRatio="xMidYMid slice" focusable="false">
           <defs>
-            <linearGradient id="bkRouteGrad" x1="0" y1="0" x2="1" y2="0">
+            <linearGradient id="tlRouteGrad" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0%" stop-color="#F9C730" stop-opacity="0"/>
               <stop offset="26%" stop-color="#F9C730" stop-opacity=".85"/>
-              <stop offset="60%" stop-color="#F9C730" stop-opacity=".9"/>
+              <stop offset="60%" stop-color="#FBD352" stop-opacity=".9"/>
               <stop offset="100%" stop-color="#F9C730" stop-opacity="0"/>
             </linearGradient>
-            <filter id="bkGlow" x="-150%" y="-150%" width="400%" height="400%">
-              <feGaussianBlur stdDeviation="4.5" result="bkBlur"/>
-              <feMerge><feMergeNode in="bkBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            <filter id="tlGlow" x="-150%" y="-150%" width="400%" height="400%">
+              <feGaussianBlur stdDeviation="4.5" result="tlBlur"/>
+              <feMerge><feMergeNode in="tlBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
           </defs>
 
@@ -494,7 +491,7 @@
             <animateMotion dur="7s" repeatCount="indefinite" begin="-6.86s" calcMode="linear"
               path="M-40 172 C 84 152 116 54 238 84 C 344 110 396 186 508 128 C 566 98 602 74 660 66"/>
           </circle>
-          <circle class="fx-comet" r="3.3" filter="url(#bkGlow)">
+          <circle class="fx-comet" r="3.3" filter="url(#tlGlow)">
             <animateMotion dur="7s" repeatCount="indefinite" calcMode="linear"
               path="M-40 172 C 84 152 116 54 238 84 C 344 110 396 186 508 128 C 566 98 602 74 660 66"/>
           </circle>
@@ -699,7 +696,7 @@
       <div class="modal-head"><div class="modal-title" id="calif-titulo">Califica tu viaje</div><button class="modal-close" data-cerrar="modal-calificar">✕</button></div>
       <p class="modal-desc" id="calif-desc">¿Cómo fue tu experiencia?</p>
       <div class="estrellas" id="estrellas"></div>
-      <p class="modal-desc" id="calif-label" style="font-weight:800;color:var(--primary-color)">Toca una estrella</p>
+      <p class="modal-desc" id="calif-label" style="font-weight:800;color:var(--accent-text)">Toca una estrella</p>
       <textarea id="calif-resena" class="campo" rows="3" placeholder="Deja una reseña (opcional)…"></textarea>
       <div class="modal-acciones">
         <button class="btn-action" id="calif-enviar" disabled><span>Enviar calificación</span></button>
@@ -756,7 +753,7 @@
       <div style="margin:12px 0;border-radius:14px;overflow:hidden;background:var(--field-bg);border:1px solid var(--border-color);max-height:360px;display:flex;align-items:center;justify-content:center">
         <img id="img-vehiculo-completa" src="" alt="Vehículo del conductor" style="width:100%;height:auto;max-height:340px;object-fit:contain;display:block">
       </div>
-      <div id="foto-vehiculo-placa" style="font-size:.92rem;font-weight:800;letter-spacing:1px;color:var(--primary-color);margin-bottom:12px"></div>
+      <div id="foto-vehiculo-placa" style="font-size:.92rem;font-weight:800;letter-spacing:1px;color:var(--accent-text);margin-bottom:12px"></div>
       <button class="btn-action btn-secundario" data-cerrar="modal-foto-vehiculo" style="padding:12px"><span>Cerrar</span></button>
     </div>
   </div>
@@ -768,7 +765,7 @@
     'use strict';
 
     /* ============================================================
-       CONFIGURACIÓN (mismas credenciales reales que index.html)
+       CONFIGURACIÓN (mismas credenciales reales que index.html y app.html)
        ============================================================ */
     const SUPABASE_URL = "https://nagmdmahhxidztyfltak.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5hZ21kbWFoaHhpZHp0eWZsdGFrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ2Mjg3NDIsImV4cCI6MjExMDIwNDc0Mn0.j4n6UuClZG04oZzlgKNu3rWXmN1P4OJnmqTw2vFvhwE";
@@ -776,9 +773,10 @@
     window.supabaseClient = db;                      /* compatibilidad con otros scripts */
 
     const K_SESION = 'tolitecno_usuario';
-    const FOTO_REPO_GITHUB = 'https://tolitecnoapp-glitch.github.io/TOLITECNO/icon-192.png';
+    const FOTO_REPO_GITHUB = 'icon-192.png';
     const INTERVALO_REFRESCO = 8000;                 /* respaldo si Realtime no está disponible */
     const URL_SW = 'sw.js';                          /* service worker de notificaciones push (misma carpeta) */
+    const VAPID_PUBLIC_KEY = 'BI1JkGq9zsKBIQlVcVzvOxgSpL_1TvfOlla-hDH4C0Ve3IfQWWy9q81YkhLcH4sZ6x04O_ZJzOhbN04ky43Vih0';
 
     /* ============================================================
        ESTADO
@@ -807,7 +805,7 @@
        ICONOS SVG
        ============================================================ */
     const SVG = {
-      auto: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3v-4l2-5h9l3 5h3a1 1 0 0 1 1 1v3h-2"/><circle cx="7.5" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>',
+      auto: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3v-4l2-5h9l3 5h3a1 1 0 0 1 1 1v3h-2"/><circle cx="7.5" cy="17" r="2"/><circle cx="17.5" cy="17" r="2"/></svg>',
       moto: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18.5" cy="17" r="3"/><circle cx="5.5" cy="17" r="3"/><path d="M12 17V13l-3-3 4-2.5 2 2.5h2"/></svg>',
       caja: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-3.3l-1.7-3.2a1 1 0 0 0-.9-.5H14"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>',
       bolsa: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>',
@@ -928,11 +926,59 @@
     }
     ['pointerdown', 'touchstart', 'keydown', 'click'].forEach((ev) => document.addEventListener(ev, desbloquearAudio, { passive: true }));
 
+    function urlBase64ToUint8Array(b64) {
+      const pad = '='.repeat((4 - b64.length % 4) % 4);
+      const base64 = (b64 + pad).replace(/-/g, '+').replace(/_/g, '/');
+      const raw = atob(base64);
+      const out = new Uint8Array(raw.length);
+      for (let i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+      return out;
+    }
+    function bufferABase64Url(buf) {
+      if (!buf) return '';
+      const bytes = new Uint8Array(buf);
+      let s = '';
+      for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+      return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+
+    async function asegurarSuscripcionPushViaje() {
+      try {
+        if (!db || !usuarioSesion || usuarioSesion.id == null) return;
+        if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) return;
+        if (Notification.permission !== 'granted') return;
+        const reg = swRegistro || await navigator.serviceWorker.register(URL_SW);
+        if (!reg) return;
+        await navigator.serviceWorker.ready;
+        let sub = await reg.pushManager.getSubscription();
+        if (sub && sub.options && sub.options.applicationServerKey &&
+            bufferABase64Url(sub.options.applicationServerKey) !== VAPID_PUBLIC_KEY) {
+          try { await sub.unsubscribe(); } catch (e) {}
+          sub = null;
+        }
+        if (!sub) {
+          sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) });
+        }
+        const j = sub.toJSON(), keys = j.keys || {};
+        await db.rpc('tolitecno_registrar_push', {
+          p_usuario_id: String(usuarioSesion.id),
+          p_rol: rolUsuario === 'conductor' ? 'conductor' : 'pasajero',
+          p_servicio: null,
+          p_endpoint: sub.endpoint,
+          p_p256dh: keys.p256dh || '',
+          p_auth: keys.auth || '',
+          p_url_app: new URL('app.html', location.href).href,
+          p_user_agent: (navigator.userAgent || '').slice(0, 250)
+        });
+      } catch (e) { console.warn('Push viaje:', e && e.message); }
+    }
+
     /* Service worker: recibe los push y permite mostrar notificaciones del sistema */
     async function registrarServiceWorker() {
       if (!('serviceWorker' in navigator)) return null;
       try { swRegistro = await navigator.serviceWorker.register(URL_SW); }
       catch (e) { swRegistro = null; console.warn('Service Worker no disponible:', e && e.message); }
+      asegurarSuscripcionPushViaje();
       return swRegistro;
     }
 
@@ -943,6 +989,7 @@
         /* Llegó un push (o se tocó una notificación): se lee el viaje y, si cambió de estado, suena y se avisa */
         if (d.tipo === 'push-estado' && (d.viaje_id == null || mismoId(d.viaje_id, viajeId))) obtenerDatosViaje(true);
         else if (d.tipo === 'abrir-viaje') obtenerDatosViaje(true);
+        else if (d.tipo === 'renovar-push') asegurarSuscripcionPushViaje();
       });
     }
 
@@ -1017,7 +1064,16 @@
       sonidoTolitecno(1);
       mostrarToast(t[2]);
       try { if (navigator.vibrate) navigator.vibrate([200, 80, 200]); } catch (e) {}
-      notificarSistema(t[0], t[1], { tag: 'tolitecno-estado-' + viajeId + '-' + grupo, viaje_id: viajeId, tipo: 'estado_viaje' });
+      notificarSistema(t[0], t[1], { forzar: true, tag: 'tolitecno-estado-' + viajeId + '-' + grupo, viaje_id: viajeId, tipo: 'estado_viaje' });
+      if (!esCond && estado === 'terminado') {
+        setTimeout(() => {
+          notificarSistema(
+            '⭐ Califica a tu conductor',
+            '¿Cómo fue tu experiencia en TOLITECNO? Toca aquí para calificar a tu conductor.',
+            { forzar: true, tag: 'tolitecno-calificar-' + viajeId, viaje_id: viajeId, tipo: 'estado_viaje' }
+          );
+        }, 1200);
+      }
     }
 
     /* Detecta un cambio de estado distinto al de la lectura anterior (la primera lectura nunca se anuncia) */
@@ -1079,16 +1135,16 @@
     }
 
     /* ============================================================
-       TEMA
+       TEMA (enlazado con index.html y app.html)
        ============================================================ */
     function aplicarTema(oscuro) {
       document.body.classList.toggle('dark-theme', oscuro);
       $('ico-luna').style.display = oscuro ? 'none' : 'block';
       $('ico-sol').style.display = oscuro ? 'block' : 'none';
-      try { localStorage.setItem('tolitecno_tema', oscuro ? 'oscuro' : 'claro'); } catch (e) {}
+      try { localStorage.setItem('tolitecno_theme_pref', oscuro ? 'dark' : 'light'); } catch (e) {}
     }
     $('btn-tema').addEventListener('click', () => aplicarTema(!document.body.classList.contains('dark-theme')));
-    aplicarTema((localStorage.getItem('tolitecno_tema') || 'oscuro') === 'oscuro');
+    aplicarTema((localStorage.getItem('tolitecno_theme_pref') || 'dark') === 'dark');
 
     /* ============================================================
        NORMALIZACIÓN DE SERVICIO
@@ -1106,7 +1162,7 @@
       return null;
     }
     function etiquetaServicio(clave) {
-      return { moto_taxi:'Moto Taxi', moto_delivery:'Moto Delivery', taxi_auto:'Taxi Auto', auto_particular:'TOLITECNO AUTO' }[clave] || 'Servicio TOLITECNO';
+      return { moto_taxi:'TOLITECNO MOTO', moto_delivery:'TOLITECNO ENVÍOS', taxi_auto:'TOLITECNO TAXI', auto_particular:'TOLITECNO AUTO' }[clave] || 'Servicio TOLITECNO';
     }
 
     /* ============================================================
@@ -1187,24 +1243,24 @@
       return info;
     }
 
-/* [MODIFICACIÓN 4] Helper para extraer la foto real del vehículo guardada en Supabase */
-function obtenerFotoVehiculo(info, v) {
-  const veh = info && info.vehiculo;
-  const doc = info && info.doc;
-  const cond = info && info.conductor;
+    /* [MODIFICACIÓN 4] Helper para extraer la foto real del vehículo guardada en Supabase */
+    function obtenerFotoVehiculo(info, v) {
+      const veh = info && info.vehiculo;
+      const doc = info && info.doc;
+      const cond = info && info.conductor;
 
-  const foto = 
-    (doc && doc.foto_vehiculo) || 
-    (veh && veh.foto_vehiculo) || 
-    (cond && cond.foto_vehiculo) || 
-    (v && (v.foto_vehiculo || v.vehiculo_foto));
+      const foto =
+        (doc && doc.foto_vehiculo) ||
+        (veh && veh.foto_vehiculo) ||
+        (cond && cond.foto_vehiculo) ||
+        (v && (v.foto_vehiculo || v.vehiculo_foto));
 
-  if (foto && typeof foto === 'string' && foto.trim().length > 6) {
-    return foto.trim();
-  }
+      if (foto && typeof foto === 'string' && foto.trim().length > 6) {
+        return foto.trim();
+      }
 
-  return null;
-}
+      return null;
+    }
 
     /* Estadísticas de calificación promedio (los viajes se eliminan de la visualización según punto 5) */
     function limpiarCacheStats() {
@@ -1237,7 +1293,8 @@ function obtenerFotoVehiculo(info, v) {
             }
           }
         }
-      /* Respaldo: columnas de calificación dentro de viajes */
+
+        /* Respaldo: columnas de calificación dentro de viajes */
         if (res.promedio == null) {
           const col = rolPersona === 'conductor' ? 'calificacion_conductor' : 'calificacion_pasajero';
           if (cv.indexOf(col) >= 0 && cv.indexOf(campoId) >= 0) {
@@ -1342,7 +1399,7 @@ function obtenerFotoVehiculo(info, v) {
     function avatarDe(nombre) {
       const letra = (String(nombre || 'T').trim().charAt(0) || 'T').toUpperCase();
       const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
-        '<stop offset="0" stop-color="#F9C730"/><stop offset="1" stop-color="#EAB308"/></linearGradient></defs>' +
+        '<stop offset="0" stop-color="#F9C730"/><stop offset="1" stop-color="#C49300"/></linearGradient></defs>' +
         '<rect width="100" height="100" fill="url(#g)"/><text x="50" y="50" dy=".36em" text-anchor="middle" ' +
         'font-family="Inter,Arial" font-size="46" font-weight="800" fill="#121212">' + letra + '</text></svg>';
       return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
